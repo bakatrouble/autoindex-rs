@@ -43,7 +43,7 @@ impl Config {
             .unwrap();
         let hostname = env::var("HOSTNAME").ok();
         let expose_base_path = env::var("EXPOSE_BASE_PATH").ok().is_some();
-        let default_mode = match env::var("DEFAULT_MODE").unwrap_or("gallery".into()).as_str() {
+        let default_mode = match env::var("DEFAULT_MODE").unwrap_or("list".into()).as_str() {
             "gallery" => DefaultMode::Gallery,
             _ => DefaultMode::List,
         };
