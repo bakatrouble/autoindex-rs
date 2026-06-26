@@ -2,14 +2,14 @@ mod endpoints;
 mod state;
 
 use std::sync::Arc;
-use axum::{
-    routing::{
-        get,
-        post
-    },
-    Router,
-};
+use axum::{routing::{
+    get,
+    post
+}, RequestExt, RequestPartsExt, Router};
 use axum::http::Request;
+use axum_extra::headers::Host;
+use axum_extra::typed_header::TypedHeaderRejection;
+use axum_extra::TypedHeader;
 use tokio::{
     sync::RwLock,
     signal
@@ -83,12 +83,16 @@ async fn main() {
                    CompressionLayer::new(),
                    TraceLayer::new_for_http()
                        .make_span_with(|request: &Request<_>| {
+                           let host = request.headers()
+                               .get("Host")
+                               .map(|v| v.to_str().unwrap_or(""))
+                               .unwrap_or("");
                            tracing::span!(
                                Level::INFO,
                                "request",
                                method = %request.method(),
                                uri = %request.uri(),
-                               host = ?request.uri().host(),
+                               host = ?host,
                                version = ?request.version(),
                            )
                        })
