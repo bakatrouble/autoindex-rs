@@ -26,11 +26,20 @@ pub async fn chroot(
         ).into_response();
     }
 
-    let path = PathBuf::from(params.new_root).canonicalize().unwrap();
-
-    if !path.exists() || !path.is_dir() {
+    let path = PathBuf::from(params.new_root).canonicalize();  // also checks for existence
+    if !path.is_ok() {
         return (
             StatusCode::NOT_FOUND,
+            Json(ErrorResponse {
+                error: "not found".into(),
+            })
+        ).into_response();
+    }
+
+    let path = path.unwrap();
+    if !path.is_dir() {
+        return (
+            StatusCode::BAD_REQUEST,
             Json(ErrorResponse {
                 error: "not a directory".into(),
             })

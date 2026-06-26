@@ -20,8 +20,11 @@ provide('viewMode', viewMode);
 
 watch(path, path => {
     const sanitizedPath = path.replace('%', '%25').replace('#', '%23').replace('?', '%3F');
-    history.pushState({}, '', sanitizedPath)
+    history.pushState({}, '', sanitizedPath);
 });
+watch(path, path => {
+    document.title = `autoindex: ${path}`;
+}, { immediate: true });
 onMounted(() => {
     addEventListener('popstate', () => path.value = decodeURIComponent(location.pathname));
 

@@ -1,6 +1,7 @@
 use std::hash::{DefaultHasher, Hash, Hasher};
 use fchashmap::FcHashMap;
 use image::{DynamicImage, EncodableLayout, GenericImageView};
+use tracing::log::{debug, trace};
 use webpx::{Encoder, Unstoppable};
 
 pub struct Thumbnails {
@@ -22,10 +23,10 @@ impl Thumbnails {
         let hash = s.finish();
 
         if self.map.contains_key(&hash) {
-            println!("Thumbnail cache hit!");
+            debug!("thumbnail cache hit");
             return self.map.get(&hash).unwrap().clone();
         }
-        println!("Thumbnail cache miss!");
+        debug!("thumbnail cache miss");
 
         let size = src_image.dimensions();
         let multiplier = if size.0 > size.1 {

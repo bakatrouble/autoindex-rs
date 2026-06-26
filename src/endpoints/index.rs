@@ -59,14 +59,19 @@ pub async fn index(
     let items: Vec<IndexResponseItem> = local_path.read_dir().unwrap()
         .filter_map(|entry| {
             let entry = entry.unwrap();
-            entry.metadata().ok().map(|metadata| IndexResponseItem {
-                name: entry.file_name().to_string_lossy().into(),
-                path: String::from("/") + &path.join(entry.file_name()).to_string_lossy(),
-                size: metadata.len(),
-                mime_type: mime_guess::from_path(entry.path()).first_or_octet_stream().to_string(),
-                mtime: metadata.modified().unwrap().duration_since(UNIX_EPOCH).unwrap().as_secs(),
-                is_dir: metadata.is_dir(),
-            })
+            let filename: String = entry.file_name().to_string_lossy().into();
+            if filename.starts_with(".") {
+                None
+            } else {
+                entry.metadata().ok().map(|metadata| IndexResponseItem {
+                    name: filename,
+                    path: String::from("/") + &path.join(entry.file_name()).to_string_lossy(),
+                    size: metadata.len(),
+                    mime_type: mime_guess::from_path(entry.path()).first_or_octet_stream().to_string(),
+                    mtime: metadata.modified().unwrap().duration_since(UNIX_EPOCH).unwrap().as_secs(),
+                    is_dir: metadata.is_dir(),
+                })
+            }
         })
         .collect();
 

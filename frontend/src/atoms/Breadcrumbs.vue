@@ -25,9 +25,9 @@ const pathComponents = computed(() => {
 
 const root = computed(() => {
     let str = basePath || location.host;
-    if (str !== '/') {
-        str += '/';
-    }
+    // if (str !== '/') {
+    //     str += '/';
+    // }
     return str;
 })
 </script>
@@ -41,6 +41,7 @@ const root = computed(() => {
         >
             {{ root }}
         </a>
+        <span class="slash">/</span>
         <template v-for="component in pathComponents">
             <a
                 :href="component.path"

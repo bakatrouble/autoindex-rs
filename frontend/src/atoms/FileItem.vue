@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { getIcon } from 'material-file-icons';
 import { computed, ref, watch } from "vue";
-import FolderIcon from '@/assets/folder-icon.svg';
+import FolderIcon from '@mdi/svg/svg/folder.svg';
 import { useElementVisibility, useTimeAgo } from "@vueuse/core";
 import useViewMode from "@/composables/useViewMode.ts";
 import useFileSize from "@/composables/useFileSize.ts";
@@ -90,6 +90,10 @@ watch(currentVisibility, currentVisibility => visibility.value ||= currentVisibi
 
 <style scoped>
 @reference "../style.css";
+
+.icon > svg {
+    @apply fill-gray-300;
+}
 
 .wrapper.gallery {
     @apply relative my-3;
