@@ -61,7 +61,7 @@ pub async fn main_handler(
 ) -> Result<Response, StatusCode> {
     let config = state.read().await.config.clone();
 
-    let path = Config::clean_path(uri.path());
+    let path = Config::clean_path(urlencoding::decode(uri.path()).unwrap().to_string());
     let local_root = match config.get_root_path(&host) {
         Some((root, _)) => root,
         None => {
