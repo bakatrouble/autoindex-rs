@@ -1,5 +1,6 @@
 mod endpoints;
 mod state;
+mod host_extractor;
 
 use std::sync::Arc;
 use axum::{routing::{
@@ -84,9 +85,13 @@ async fn main() {
                    TraceLayer::new_for_http()
                        .make_span_with(|request: &Request<_>| {
                            let host = request.headers()
-                               .get("Host")
+                               .get("host")
                                .map(|v| v.to_str().unwrap_or(""))
-                               .unwrap_or("");
+                               .unwrap_or_else(|| request.headers()
+                                   .get("x-forwarded-host")
+                                   .map(|v| v.to_str().unwrap_or(""))
+                                   .unwrap_or(""));
+                           
                            tracing::span!(
                                Level::INFO,
                                "request",

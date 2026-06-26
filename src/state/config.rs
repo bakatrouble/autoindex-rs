@@ -1,7 +1,5 @@
 use std::env;
 use std::path::{Path, PathBuf};
-use axum::http::Uri;
-use axum_extra::extract::TypedHeader;
 use axum_extra::headers::Host;
 use serde::Serialize;
 

@@ -3,12 +3,12 @@ use axum::body::Body;
 use axum::extract::{State, Request};
 use axum::http::{header, StatusCode, Uri};
 use axum::response::{IntoResponse, Response};
-use axum_extra::headers::Host;
-use axum_extra::TypedHeader;
 use include_dir::{include_dir, Dir};
 use reqwest::Client;
 use tokio::fs::File;
 use tokio_util::io::ReaderStream;
+use tracing::log::info;
+use crate::host_extractor::Host;
 use crate::state::config::Config;
 use crate::state::SharedState;
 
@@ -55,7 +55,7 @@ async fn serve_file(path: &PathBuf, contents: &[u8]) -> Result<Response, StatusC
 #[axum::debug_handler]
 pub async fn main_handler(
     uri: Uri,
-    TypedHeader(host): TypedHeader<Host>,
+    Host(host): Host,
     State(state): State<SharedState>,
     request: Request,
 ) -> Result<Response, StatusCode> {
@@ -69,6 +69,7 @@ pub async fn main_handler(
         }
     };
     let local_path = local_root.join(&path);
+    info!("checking file at {local_path:?}");
     if local_path.exists() && local_path.is_file() {
         return serve_file_by_path(&local_path).await;
     }

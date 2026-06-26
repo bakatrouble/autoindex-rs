@@ -122,6 +122,7 @@ dependencies = [
  "fast_image_resize",
  "fchashmap",
  "futures-util",
+ "http",
  "image",
  "include_dir",
  "mime_guess",

@@ -2,12 +2,11 @@ use axum::extract::{Query, State};
 use axum::http::{HeaderMap, StatusCode, Uri};
 use axum::Json;
 use axum::response::{IntoResponse, Response};
-use axum_extra::headers::Host;
-use axum_extra::TypedHeader;
 use image::{ImageReader};
 use serde::Deserialize;
 use crate::state::config::Config;
 use crate::endpoints::ErrorResponse;
+use crate::host_extractor::Host;
 use crate::state::SharedState;
 
 #[derive(Deserialize)]
@@ -17,7 +16,7 @@ pub struct ThumbnailParams {
 
 #[axum::debug_handler]
 pub async fn thumbnail(
-    TypedHeader(host): TypedHeader<Host>,
+    Host(host): Host,
     Query(params): Query<ThumbnailParams>,
     State(state): State<SharedState>,
 ) -> Response {

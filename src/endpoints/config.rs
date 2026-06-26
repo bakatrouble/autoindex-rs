@@ -1,10 +1,8 @@
 use axum::extract::{Query, State};
-use axum::http::{Uri};
 use axum::Json;
 use axum::response::{IntoResponse, Response};
-use axum_extra::headers::Host;
-use axum_extra::TypedHeader;
 use serde::Deserialize;
+use crate::host_extractor::Host;
 use crate::state::SharedState;
 
 #[derive(Deserialize)]
@@ -14,7 +12,7 @@ pub struct ConfigParams {
 
 #[axum::debug_handler]
 pub async fn config(
-    TypedHeader(host): TypedHeader<Host>,
+    Host(host): Host,
     State(state): State<SharedState>,
     Query(params): Query<ConfigParams>,
 ) -> Response {

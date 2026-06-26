@@ -3,11 +3,10 @@ use axum::extract::{Query, State};
 use axum::http::{StatusCode, Uri};
 use axum::Json;
 use axum::response::{IntoResponse, Response};
-use axum_extra::headers::Host;
-use axum_extra::TypedHeader;
 use serde::{Deserialize, Serialize};
 use crate::state::config::Config;
 use crate::endpoints::ErrorResponse;
+use crate::host_extractor::Host;
 use crate::state::SharedState;
 
 #[derive(Serialize)]
@@ -34,7 +33,7 @@ pub struct IndexParams {
 
 #[axum::debug_handler]
 pub async fn index(
-    TypedHeader(host): TypedHeader<Host>,
+    Host(host): Host,
     Query(params): Query<IndexParams>,
     State(state): State<SharedState>,
 ) -> Result<Response, Response> {
