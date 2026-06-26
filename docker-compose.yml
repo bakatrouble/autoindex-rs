@@ -1,0 +1,10 @@
+services:
+  autoindex-rs:
+    image: ghcr.io/bakatrouble/autoindex-rs:latest
+    environment:
+      HOSTNAME: ${HOSTNAME}
+    volumes:
+      - "${FILES_ROOT}:/app/files/root"
+      - "${SUBDOMAINS_ROOT}:/app/files/subdomains"
+    ports:
+      - "8474:8474"
