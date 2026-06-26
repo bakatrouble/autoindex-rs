@@ -3,6 +3,8 @@ use axum::body::Body;
 use axum::extract::{State, Request};
 use axum::http::{header, StatusCode, Uri};
 use axum::response::{IntoResponse, Response};
+use axum_extra::headers::Host;
+use axum_extra::TypedHeader;
 use include_dir::{include_dir, Dir};
 use reqwest::Client;
 use tokio::fs::File;
@@ -53,13 +55,14 @@ async fn serve_file(path: &PathBuf, contents: &[u8]) -> Result<Response, StatusC
 #[axum::debug_handler]
 pub async fn main_handler(
     uri: Uri,
+    TypedHeader(host): TypedHeader<Host>,
     State(state): State<SharedState>,
     request: Request,
 ) -> Result<Response, StatusCode> {
     let config = state.read().await.config.clone();
 
     let path = Config::clean_path(uri.path());
-    let local_root = match config.get_root_path(&uri) {
+    let local_root = match config.get_root_path(&host) {
         Some((root, _)) => root,
         None => {
             return Err(StatusCode::NOT_FOUND);

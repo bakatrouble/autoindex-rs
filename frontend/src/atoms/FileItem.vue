@@ -130,7 +130,7 @@ watch(currentVisibility, currentVisibility => visibility.value ||= currentVisibi
     @apply contents;
 
     & > span {
-        @apply table-cell transition-colors;
+        @apply transition-colors;
 
         .icon {
             @apply inline-block size-8 mr-2;

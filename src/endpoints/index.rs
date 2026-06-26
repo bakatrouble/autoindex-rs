@@ -3,6 +3,8 @@ use axum::extract::{Query, State};
 use axum::http::{StatusCode, Uri};
 use axum::Json;
 use axum::response::{IntoResponse, Response};
+use axum_extra::headers::Host;
+use axum_extra::TypedHeader;
 use serde::{Deserialize, Serialize};
 use crate::state::config::Config;
 use crate::endpoints::ErrorResponse;
@@ -32,14 +34,14 @@ pub struct IndexParams {
 
 #[axum::debug_handler]
 pub async fn index(
-    uri: Uri,
+    TypedHeader(host): TypedHeader<Host>,
     Query(params): Query<IndexParams>,
     State(state): State<SharedState>,
 ) -> Result<Response, Response> {
     let config = state.read().await.config.clone();
 
     let path = Config::clean_path(params.path.clone().unwrap_or_else(|| ".".to_string()));
-    let local_root = match config.get_root_path(&uri) {
+    let local_root = match config.get_root_path(&host) {
         Some((root, _)) => root,
         None => {
             return Err((StatusCode::NOT_FOUND).into_response());

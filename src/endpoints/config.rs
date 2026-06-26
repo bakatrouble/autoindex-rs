@@ -2,6 +2,8 @@ use axum::extract::{Query, State};
 use axum::http::{Uri};
 use axum::Json;
 use axum::response::{IntoResponse, Response};
+use axum_extra::headers::Host;
+use axum_extra::TypedHeader;
 use serde::Deserialize;
 use crate::state::SharedState;
 
@@ -12,13 +14,13 @@ pub struct ConfigParams {
 
 #[axum::debug_handler]
 pub async fn config(
-    uri: Uri,
+    TypedHeader(host): TypedHeader<Host>,
     State(state): State<SharedState>,
     Query(params): Query<ConfigParams>,
 ) -> Response {
     let config = state.read().await.config.clone();
 
-    let config_response = config.get_config_response(&uri);
+    let config_response = config.get_config_response(&host);
 
     if params.json.is_some() {
         (Json(config_response)).into_response()

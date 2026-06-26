@@ -1,6 +1,8 @@
 use std::env;
 use std::path::{Path, PathBuf};
 use axum::http::Uri;
+use axum_extra::extract::TypedHeader;
+use axum_extra::headers::Host;
 use serde::Serialize;
 
 #[derive(Serialize)]
@@ -63,7 +65,7 @@ impl Config {
         }
     }
 
-    pub fn get_config_response(&self, uri: &Uri) -> ConfigResponse {
+    pub fn get_config_response(&self, host: &Host) -> ConfigResponse {
         let default_mode = self.default_mode;
         if !self.expose_base_path {
             return ConfigResponse {
@@ -73,20 +75,20 @@ impl Config {
         }
 
         ConfigResponse {
-            root: self.get_root_path(uri).map(|(path, _)| {
+            root: self.get_root_path(&host).map(|(path, _)| {
                 path.to_string_lossy().into()
             }),
             default_mode,
         }
     }
 
-    pub fn get_root_path(&self, uri: &Uri) -> Option<(PathBuf, bool)> {
+    pub fn get_root_path(&self, host: &Host) -> Option<(PathBuf, bool)> {
         if self.hostname.is_none() {
             return Some((self.files_root.clone(), true));
         }
 
         let hostname = self.hostname.clone().unwrap();
-        let host = uri.host().unwrap_or("").strip_suffix(hostname.as_str()).unwrap_or("");
+        let host = host.hostname().strip_suffix(hostname.as_str()).unwrap_or("");
         if host.is_empty() || !host.ends_with(".") {
             return Some((self.files_root.clone(), true));
         }

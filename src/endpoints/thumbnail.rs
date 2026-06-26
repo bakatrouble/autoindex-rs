@@ -2,6 +2,8 @@ use axum::extract::{Query, State};
 use axum::http::{HeaderMap, StatusCode, Uri};
 use axum::Json;
 use axum::response::{IntoResponse, Response};
+use axum_extra::headers::Host;
+use axum_extra::TypedHeader;
 use image::{ImageReader};
 use serde::Deserialize;
 use crate::state::config::Config;
@@ -15,14 +17,14 @@ pub struct ThumbnailParams {
 
 #[axum::debug_handler]
 pub async fn thumbnail(
-    uri: Uri,
+    TypedHeader(host): TypedHeader<Host>,
     Query(params): Query<ThumbnailParams>,
     State(state): State<SharedState>,
 ) -> Response {
     let config = state.read().await.config.clone();
     
     let path = Config::clean_path(params.path.clone().unwrap_or_else(|| ".".to_string()));
-    let local_root = match config.get_root_path(&uri) {
+    let local_root = match config.get_root_path(&host) {
         Some((root, _)) => root,
         None => {
             return (StatusCode::NOT_FOUND).into_response();
