@@ -1,11 +1,15 @@
 use std::path::PathBuf;
-use axum::extract::{Query, State};
-use axum::http::StatusCode;
-use axum::Json;
-use axum::response::{IntoResponse, Response};
+use axum::{
+    extract::{Query, State},
+    http::StatusCode,
+    Json,
+    response::{IntoResponse, Response}
+};
 use serde::Deserialize;
-use crate::endpoints::ErrorResponse;
-use crate::state::SharedState;
+use crate::{
+    endpoints::ErrorResponse,
+    state::SharedState
+};
 
 #[derive(Deserialize)]
 pub struct ChrootParams {

@@ -1,13 +1,17 @@
-use axum::extract::{Query, State};
-use axum::http::{HeaderMap, StatusCode, Uri};
-use axum::Json;
-use axum::response::{IntoResponse, Response};
-use image::{ImageReader};
+use axum::{
+    extract::{Query, State},
+    http::{HeaderMap, StatusCode},
+    Json,
+    response::{IntoResponse, Response}
+};
+use image::ImageReader;
 use serde::Deserialize;
-use crate::state::config::Config;
-use crate::endpoints::ErrorResponse;
-use crate::host_extractor::Host;
-use crate::state::SharedState;
+use crate::{
+    state::Config,
+    endpoints::ErrorResponse,
+    host_extractor::Host,
+    state::SharedState
+};
 
 #[derive(Deserialize)]
 pub struct ThumbnailParams {

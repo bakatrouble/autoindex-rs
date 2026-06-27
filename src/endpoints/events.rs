@@ -1,10 +1,16 @@
 use std::convert::Infallible;
-use axum::extract::State;
-use axum::response::Sse;
-use axum::response::sse::{Event, KeepAlive};
+use axum::{
+    extract::State,
+    response::{
+        Sse,
+        sse::{Event, KeepAlive}
+    }
+};
 use futures_util::{Stream};
-use tokio_stream::StreamExt as _;
-use tokio_stream::wrappers::{ReceiverStream};
+use tokio_stream::{
+    StreamExt as _,
+    wrappers::{ReceiverStream}
+};
 use crate::state::SharedState;
 
 #[axum::debug_handler]

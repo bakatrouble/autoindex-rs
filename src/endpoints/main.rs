@@ -1,16 +1,22 @@
 use std::path::PathBuf;
-use axum::body::Body;
-use axum::extract::{State, Request};
-use axum::http::{header, StatusCode, Uri};
-use axum::response::{IntoResponse, Response};
+use axum::{
+    http::{header, StatusCode, Uri},
+    extract::{State, Request},
+    body::Body,
+    response::{IntoResponse, Response}
+};
 use include_dir::{include_dir, Dir};
 use reqwest::Client;
 use tokio::fs::File;
 use tokio_util::io::ReaderStream;
 use tracing::log::info;
-use crate::host_extractor::Host;
-use crate::state::config::Config;
-use crate::state::SharedState;
+use crate::{
+    host_extractor::Host,
+    state::{
+        Config,
+        SharedState
+    }
+};
 
 static FRONTEND_DIST_DIR: Dir = include_dir!("frontend/dist");
 

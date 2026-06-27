@@ -1,9 +1,13 @@
-use axum::extract::{Query, State};
-use axum::Json;
-use axum::response::{IntoResponse, Response};
+use axum::{
+    Json,
+    extract::{Query, State},
+    response::{IntoResponse, Response}
+};
 use serde::Deserialize;
-use crate::host_extractor::Host;
-use crate::state::SharedState;
+use crate::{
+    host_extractor::Host,
+    state::SharedState
+};
 
 #[derive(Deserialize)]
 pub struct ConfigParams {

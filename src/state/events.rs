@@ -1,7 +1,13 @@
-use tokio::sync::{mpsc, Mutex};
-use tokio::sync::mpsc::{Receiver, Sender};
-use tracing::debug;
-use tracing::log::info;
+use tokio::{
+    sync::{
+        Mutex,
+        mpsc::{self, Receiver, Sender}
+    }
+};
+use tracing::{
+    debug,
+    log::info
+};
 
 pub struct Events {
     subscribers: Mutex<Vec<Sender<String>>>,

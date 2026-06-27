@@ -6,17 +6,15 @@ use std::sync::Arc;
 use axum::{routing::{
     get,
     post
-}, RequestExt, RequestPartsExt, Router};
+}, Router};
 use axum::http::Request;
-use axum_extra::headers::Host;
-use axum_extra::typed_header::TypedHeaderRejection;
-use axum_extra::TypedHeader;
 use tokio::{
     sync::RwLock,
     signal
 };
 use tower_http::{compression::CompressionLayer, trace, trace::TraceLayer};
-use tracing::{Level, log::{warn}, Span};
+use tracing::{Level, log::warn};
+use tracing::log::info;
 use tracing_subscriber::{
     layer::SubscriberExt,
     util::SubscriberInitExt
@@ -106,7 +104,7 @@ async fn main() {
         ));
 
     let listener = tokio::net::TcpListener::bind(config.bind.as_str()).await.unwrap();
-    println!("Listening on http://{}", config.bind.as_str());
+    info!("Listening on http://{}", config.bind.as_str());
     axum::serve(listener, app)
         .with_graceful_shutdown(shutdown_signal(Arc::clone(&shared_state)))
         .await

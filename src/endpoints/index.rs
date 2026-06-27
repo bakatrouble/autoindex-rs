@@ -1,13 +1,19 @@
 use std::time::UNIX_EPOCH;
-use axum::extract::{Query, State};
-use axum::http::{StatusCode, Uri};
-use axum::Json;
-use axum::response::{IntoResponse, Response};
+use axum::{
+    extract::{Query, State},
+    http::StatusCode,
+    Json,
+    response::{IntoResponse, Response}
+};
 use serde::{Deserialize, Serialize};
-use crate::state::config::Config;
-use crate::endpoints::ErrorResponse;
-use crate::host_extractor::Host;
-use crate::state::SharedState;
+use crate::{
+    state::{
+        Config,
+        SharedState
+    },
+    endpoints::ErrorResponse,
+    host_extractor::Host,
+};
 
 #[derive(Serialize)]
 pub struct IndexResponseItem {

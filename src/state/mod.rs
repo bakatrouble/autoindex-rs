@@ -1,12 +1,13 @@
 use std::sync::Arc;
 use tokio::sync::RwLock;
-pub use crate::state::config::Config;
-pub use crate::state::thumbnails::Thumbnails;
-pub use crate::state::events::Events;
 
-pub mod config;
-pub mod thumbnails;
+mod config;
+mod thumbnails;
 mod events;
+
+pub use config::Config;
+pub use thumbnails::Thumbnails;
+pub use events::Events;
 
 pub struct State {
     pub config: Config,

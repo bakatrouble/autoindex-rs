@@ -1,7 +1,7 @@
 use std::hash::{DefaultHasher, Hash, Hasher};
 use fchashmap::FcHashMap;
 use image::{DynamicImage, EncodableLayout, GenericImageView};
-use tracing::log::{debug, trace};
+use tracing::log::debug;
 use webpx::{Encoder, Unstoppable};
 
 pub struct Thumbnails {
