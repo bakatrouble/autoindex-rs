@@ -1,9 +1,9 @@
 use std::{
-    env,
     path::{Path, PathBuf}
 };
 use axum_extra::headers::Host;
-use serde::Serialize;
+use serde::{Serialize};
+use clap::{Parser, ValueEnum};
 
 #[derive(Serialize)]
 pub struct ConfigResponse {
@@ -11,7 +11,8 @@ pub struct ConfigResponse {
     default_mode: DefaultMode,
 }
 
-#[derive(Serialize, Clone, Copy)]
+#[derive(ValueEnum, Serialize, Clone, Copy, Debug)]
+#[serde(rename_all = "kebab-case")]
 pub enum DefaultMode {
     #[serde(rename = "list")]
     List,
@@ -19,50 +20,29 @@ pub enum DefaultMode {
     Gallery,
 }
 
-#[derive(Serialize, Clone)]
+#[derive(Parser, Serialize, Clone)]
 pub struct Config {
+    #[arg(short = 'f', long, default_value = "files/root", env = "FILES_ROOT")]
     pub files_root: PathBuf,
+    #[arg(short = 's', long, default_value = "files/subdomains", env = "SUBDOMAIN_ROOT")]
     pub subdomains_root: PathBuf,
+    #[arg(long, env = "HOSTNAME")]
     pub hostname: Option<String>,
+    #[arg(short = 'e', long, default_value_t = false, env = "EXPOSE_BASE_PATH")]
     pub expose_base_path: bool,
+    #[arg(short = 'm', long, default_value = "list", env = "DEFAULT_MODE")]
     pub default_mode: DefaultMode,
+    #[arg(long, env = "DEV")]
     pub dev: Option<String>,
+    #[arg(short = 'c', long, default_value_t = false, env = "ENABLE_CHROOT")]
     pub enable_chroot: bool,
+    #[arg(short = 'b', long, default_value = "[::]:8474", env = "BIND")]
     pub bind: String,
 }
 
 impl Config {
     pub fn new() -> Self {
-        let files_root = PathBuf::from(
-            env::var("FILES_ROOT").unwrap_or("files/root".into())
-        )
-            .canonicalize()
-            .unwrap();
-        let subdomains_root = PathBuf::from(
-            env::var("SUBDOMAINS_ROOT").unwrap_or("files/subdomains".into())
-        )
-            .canonicalize()
-            .unwrap();
-        let hostname = env::var("HOSTNAME").ok();
-        let expose_base_path = env::var("EXPOSE_BASE_PATH").ok().is_some();
-        let default_mode = match env::var("DEFAULT_MODE").unwrap_or("list".into()).as_str() {
-            "gallery" => DefaultMode::Gallery,
-            _ => DefaultMode::List,
-        };
-        let dev = env::var("DEV").ok();
-        let enable_chroot = env::var("ENABLE_CHROOT").ok().is_some();
-        let bind = env::var("BIND").unwrap_or("[::]:8474".into());
-
-        Self {
-            files_root,
-            subdomains_root,
-            hostname,
-            expose_base_path,
-            default_mode,
-            dev,
-            enable_chroot,
-            bind,
-        }
+        Config::parse()
     }
 
     pub fn get_config_response(&self, host: &Host) -> ConfigResponse {
